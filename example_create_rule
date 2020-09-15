@@ -1,0 +1,20 @@
+{
+    "name": "Testestestetsets",
+    "rules": {
+        "logicalOperator": "OR",
+        "type": "CLAUSE",
+        "clauses": [
+            {
+                "type": "RULE",
+                "content": {
+                    "key": "username",
+                    "value": [
+                        "user@email.com"
+                    ],
+                    "condition": "EQUAL"
+                }
+            }
+        ]
+    },
+    "authorId": "c7e6dafe-aa7a-4536-be1b-34eaad4c2915"
+}
