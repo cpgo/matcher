@@ -1,4 +1,14 @@
+esse payload
 {
-    "requestData":{"username":"charlesadmin@admin"},
-    "workspaceId":"UNKNOWN"
+    "requestData": {
+        "username": "charlesadmin@admin",
+        "age": 18
+    },
+    "workspaceId": "111-111-111-111-111"
 }
+
+busca nas seguintes chaves
+
+{ "111-111-111-111-111", { "username", "charlesadmin@admin" }, { "age", 18 } }
+{ "111-111-111-111-111", { "username", "charlesadmin@admin" }}
+{ "111-111-111-111-111", { "age", 18 } }
