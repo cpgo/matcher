@@ -1,5 +1,5 @@
 defmodule Matcher.CreateTupleKey do
-  def from_json(json) do
+  def generate_keys(json) do
     {:ok, data} = Jason.decode(json, keys: :atoms)
 
     data.rules.clauses
@@ -28,7 +28,7 @@ defmodule Matcher.CreateTupleKey do
     ]
   end
 
-  def clauses_to_map(clauses) do
+  def clauses_to_map(clauses) when is_map_key(clauses, :clauses) do
     clauses.clauses
     |> Enum.flat_map(&clauses_to_map/1)
   end

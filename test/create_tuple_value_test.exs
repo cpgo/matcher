@@ -1,8 +1,8 @@
-defmodule EtsKeyTest do
+defmodule EtsValueTest do
   use ExUnit.Case
-  alias Matcher.CreateTupleKey
+  alias Matcher.CreateTupleValue
 
-  test "parse to ets tuple with single rule" do
+  test "parse single rule expression" do
     json_string = """
     {
     "name": "Testestestetsets",
@@ -27,12 +27,11 @@ defmodule EtsKeyTest do
     }
     """
 
-    expected = {"96c4e727-a7d2-4d1f-9ccd-215c54c13889", {{"username", "user@email.com"}}}
-
-    assert CreateTupleKey.generate_keys(json_string) == expected
+    expected = {"username", "EQUAL", "user@email.com"}
+    assert CreateTupleValue.generate_value(json_string) == expected
   end
 
-  test "parse to ets tuple with multiple rules" do
+  test "parse multiple rule expression" do
     json_string = """
     {
       "name": "Composite",
@@ -73,9 +72,21 @@ defmodule EtsKeyTest do
     }
     """
 
-    expected =
-      {"96c4e727-a7d2-4d1f-9ccd-215c54c13889", {{"username", "email@email.com"}, {"age", "18"}}}
-
-    assert CreateTupleKey.generate_keys(json_string) == expected
+    expected = {{"username", "EQUAL", "user@email.com"}, "OR", {"age", "GREATER_THAN", "18"}}
+    assert CreateTupleValue.rule_value(json_string) == expected
   end
 end
+
+[
+  {
+    {
+      {
+        :"$1",
+        {{"username", "user@email.com"}}
+      },
+      :"$2"
+    },
+    [],
+    [:"$1"]
+  }
+]

@@ -1,0 +1,49 @@
+{{"96c4e727-a7d2-4d1f-9ccd-215c54c13889", {{"username", "user@email.com"}}}, {"username", "EQUAL", "user@email.com"}}
+
+{{key, {{username, value}}}, {_u, _op, _v}}
+
+
+f = :ets.fun2ms(fn {{key, {{username, value}}}, {_u, _op, _v}} when (username == "username" and value == "user@email.com") -> key end)
+
+
+
+
+{
+  chave -> #{"96c4e727-a7d2-4d1f-9ccd-215c54c13889", {{"username", "user@email.com"}}},
+
+  valor -> #{"username", "EQUAL", "user@email.com"}
+}
+
+
+a partir do valor eu tenho que montar a expression
+f2 =
+  :ets.fun2ms(fn {{key, {{username, value}}}, _v}
+                 when username == "username" and value == "user@email.com" ->
+    key
+  end)
+
+
+f3 =
+  :ets.fun2ms(fn {{key, {{"username", "user@email.com"}}}, _v} ->
+    key
+  end)
+
+:ets.select(:circles, f2)
+
+
+
+
+
+%{
+  op: 'or',
+  lhs: %{
+    lhs: 'username',
+    condition: 'equal',
+    rhs: 'user@email'
+  },
+  rhs: %{
+    lhs: 'age',
+    condition: 'greater_than',
+    rhs: '18'
+  }
+}
