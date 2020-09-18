@@ -22,3 +22,79 @@ esse payload
 
 cria o seguinte registro no ets
 {"111-111-111-111-111", {"username", "email.com"}}, {"username", "equals", "user@email.com"}
+
+
+complex rule
+
+{
+    "name": "Complex rules",
+    "rules": {
+        "logicalOperator": "OR",
+        "type": "CLAUSE",
+        "clauses": [
+            {
+                "logicalOperator": "OR",
+                "type": "CLAUSE",
+                "clauses": [
+                    {
+                        "type": "RULE",
+                        "content": {
+                            "key": "username",
+                            "value": [
+                                "some-user"
+                            ],
+                            "condition": "EQUAL"
+                        }
+                    },
+                    {
+                        "type": "RULE",
+                        "content": {
+                            "key": "age",
+                            "value": [
+                                "18"
+                            ],
+                            "condition": "GREATER_THAN"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "RULE",
+                "content": {
+                    "key": "username",
+                    "value": [
+                        "admin"
+                    ],
+                    "condition": "EQUAL"
+                }
+            },
+            {
+                "logicalOperator": "AND",
+                "type": "CLAUSE",
+                "clauses": [
+                    {
+                        "type": "RULE",
+                        "content": {
+                            "key": "user-type",
+                            "value": [
+                                "master"
+                            ],
+                            "condition": "EQUAL"
+                        }
+                    },
+                    {
+                        "type": "RULE",
+                        "content": {
+                            "key": "user-status",
+                            "value": [
+                                "blocked"
+                            ],
+                            "condition": "NOT_EQUAL"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "authorId": "c7e6dafe-aa7a-4536-be1b-34eaad4c2915"
+}
