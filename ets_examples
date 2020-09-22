@@ -1,7 +1,10 @@
 {{"96c4e727-a7d2-4d1f-9ccd-215c54c13889", {{"username", "user@email.com"}}}, {"username", "EQUAL", "user@email.com"}}
+{ {1,2}, { %{ op: 'or', lhs: %{ lhs: 'username', condition: 'equal', rhs: 'user@email' }, rhs: %{ lhs: 'age', condition: 'greater_than', rhs: '18' } } } }
 
 {{key, {{username, value}}}, {_u, _op, _v}}
 
+usar duplicate_bag pois pode existir regras que apontam pros mesmos parametros
+circles = :ets.new(:circles, [:duplicate_bag, :protected, :named_table])
 
 f = :ets.fun2ms(fn {{key, {{username, value}}}, {_u, _op, _v}} when (username == "username" and value == "user@email.com") -> key end)
 
