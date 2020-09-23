@@ -180,7 +180,7 @@ defmodule EtsValueTest do
     expected = {
       %{
         operation: "OR",
-        clauses: [
+        rules: [
           %{
             lhs: "username",
             condition: "EQUAL",
