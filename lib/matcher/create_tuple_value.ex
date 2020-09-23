@@ -2,9 +2,6 @@ defmodule Matcher.CreateTupleValue do
   def generate_value(json) do
     {:ok, data} = Jason.decode(json, keys: :atoms)
 
-    # extracted_rules =
-    #   data.rules.clauses
-    #   |> Enum.map(fn x -> extract_content(x) end)
     data.rules.clauses
     |> extract_operation()
     |> extract_content()
@@ -13,18 +10,18 @@ defmodule Matcher.CreateTupleValue do
 
   def extract_operation(clauses) do
     Enum.reduce(clauses, [], fn c, acc ->
-      reduce_node(c, acc)
+      transform_node(c, acc)
     end)
   end
 
-  def reduce_node(node = %{type: "CLAUSE", clauses: sub_clauses}, acc) do
+  def transform_node(node = %{type: "CLAUSE", clauses: sub_clauses}, acc) do
     %{
       operation: node.logicalOperator,
-      clauses: acc ++ sub_clauses
+      clauses: Enum.map(acc ++ sub_clauses, fn c -> c.content end)
     }
   end
 
-  def reduce_node(%{type: "RULE", content: content}, _) do
+  def transform_node(%{type: "RULE", content: content}, _) do
     %{
       clause: content
     }
@@ -48,11 +45,7 @@ defmodule Matcher.CreateTupleValue do
   def extract_content_from_list(clauses) do
     clauses
     |> Enum.map(fn x ->
-      %{
-        lhs: x.content.key,
-        condition: x.content.condition,
-        rhs: x.content.value |> List.first()
-      }
+      extract_content(%{clause: x})
     end)
   end
 

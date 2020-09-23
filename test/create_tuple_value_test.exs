@@ -83,7 +83,6 @@ defmodule EtsValueTest do
     }
     """
 
-    # expected = {{"username", "EQUAL", "user@email.com"}, "OR", {"age", "GREATER_THAN", "18"}}
     expected = {
       %{
         operation: "OR",
@@ -155,28 +154,6 @@ defmodule EtsValueTest do
     }
     """
 
-    # expected = {
-    #   %{
-    #     operation: "OR",
-    #     lhs: %{
-    #       lhs: "username",
-    #       condition: "EQUAL",
-    #       rhs: "admin"
-    #     },
-    #     rhs: %{
-    #       lhs: %{
-    #         lhs: "age",
-    #         condition: "GREATER_THAN",
-    #         rhs: "18"
-    #       },
-    #       rhs: %{
-    #         lhs: "role",
-    #         condition: "EQUAL",
-    #         rhs: "root"
-    #       }
-    #     }
-    #   }
-    # }
     expected = {
       %{
         operation: "OR",
