@@ -8,33 +8,33 @@ defmodule Matcher.CreateTupleValue do
     |> wrap_content()
   end
 
-  def extract_operation(clauses) do
+  defp extract_operation(clauses) do
     Enum.reduce(clauses, [], fn c, acc ->
       transform_node(c, acc)
     end)
   end
 
-  def transform_node(node = %{type: "CLAUSE", clauses: sub_clauses}, acc) do
+  defp transform_node(node = %{type: "CLAUSE", clauses: sub_clauses}, acc) do
     %{
       operation: node.logicalOperator,
       clauses: Enum.map(acc ++ sub_clauses, fn c -> c.content end)
     }
   end
 
-  def transform_node(%{type: "RULE", content: content}, _) do
+  defp transform_node(%{type: "RULE", content: content}, _) do
     %{
       clause: content
     }
   end
 
-  def extract_content(%{clauses: clauses, operation: operation}) do
+  defp extract_content(%{clauses: clauses, operation: operation}) do
     %{
       op: operation,
       rules: extract_content_from_list(clauses)
     }
   end
 
-  def extract_content(%{clause: clause}) do
+  defp extract_content(%{clause: clause}) do
     %{
       lhs: clause.key,
       condition: clause.condition,
@@ -42,14 +42,14 @@ defmodule Matcher.CreateTupleValue do
     }
   end
 
-  def extract_content_from_list(clauses) do
+  defp extract_content_from_list(clauses) do
     clauses
     |> Enum.map(fn x ->
       extract_content(%{clause: x})
     end)
   end
 
-  def wrap_content(clause = %{lhs: _}) do
+  defp wrap_content(clause = %{lhs: _}) do
     {
       %{
         rules: [clause]
@@ -57,7 +57,7 @@ defmodule Matcher.CreateTupleValue do
     }
   end
 
-  def wrap_content(%{op: op, rules: rules}) do
+  defp wrap_content(%{op: op, rules: rules}) do
     {
       %{
         operation: op,

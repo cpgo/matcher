@@ -8,18 +8,18 @@ defmodule Matcher.CreateTupleKey do
     |> Tuple.insert_at(0, data.workspaceId)
   end
 
-  def clause_map_to_tuple(clause_maps) when is_list(clause_maps) do
+  defp clause_map_to_tuple(clause_maps) when is_list(clause_maps) do
     clause_maps
     |> Enum.reduce({}, fn map, s ->
       Tuple.append(s, clause_map_to_tuple(map))
     end)
   end
 
-  def clause_map_to_tuple(clause_map) do
+  defp clause_map_to_tuple(clause_map) do
     {clause_map.key, clause_map.value}
   end
 
-  def clauses_to_map(clauses) when is_map_key(clauses, :content) do
+  defp clauses_to_map(clauses) when is_map_key(clauses, :content) do
     [
       %{
         key: clauses.content.key,
@@ -28,7 +28,7 @@ defmodule Matcher.CreateTupleKey do
     ]
   end
 
-  def clauses_to_map(clauses) when is_map_key(clauses, :clauses) do
+  defp clauses_to_map(clauses) when is_map_key(clauses, :clauses) do
     clauses.clauses
     |> Enum.flat_map(&clauses_to_map/1)
   end
