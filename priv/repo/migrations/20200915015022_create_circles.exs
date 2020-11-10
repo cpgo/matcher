@@ -4,7 +4,7 @@ defmodule Matcher.Repo.Migrations.CreateCircles do
   def change do
     create table(:circles, primary_key: false) do
       add(:id, :uuid, primary_key: true)
-      add(:name, :string, null: false)
+      add(:rules, :jsonb, null: false)
     end
   end
 end

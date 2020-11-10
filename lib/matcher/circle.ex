@@ -4,7 +4,6 @@ defmodule Matcher.Circle do
   @foreign_key_type :binary_id
 
   schema "circles" do
-    field(:name, :string)
-    has_many(:rules, Matcher.Rule)
+    field(:rules, :map)
   end
 end
