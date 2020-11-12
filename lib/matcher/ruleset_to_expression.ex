@@ -1,4 +1,14 @@
 defmodule RulesetToExpression do
+  def run({%{operation: "OR", rules: rules}}, data) do
+    Enum.map(rules, fn r -> run(r, data) end)
+    |> Enum.any?()
+  end
+
+  def run({%{operation: "AND", rules: rules}}, data) do
+    Enum.map(rules, fn r -> run(r, data) end)
+    |> Enum.all?()
+  end
+
   def run(%{lhs: lhs, condition: "EQUAL", rhs: rhs}, %{data: data}) do
     extract_data(lhs, data) == rhs
   end
