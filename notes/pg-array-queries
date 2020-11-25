@@ -1,3 +1,7 @@
+q = from c in CircleMatcher.Circles.Circle, where: fragment("?.key_values->'keys' @> any (array[?]::jsonb[])", c, ^array), select: c.id
+q = from c in CircleMatcher.Circles.Circle, where: fragment("?.key_values->'keys' && (?)", c, ["3"]), select: c.id
+
+
 drop table test;
 create table test (
   keys text[],
