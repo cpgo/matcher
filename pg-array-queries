@@ -1,0 +1,51 @@
+drop table test;
+create table test (
+  keys text[],
+  key_value jsonb
+);
+
+create index idx_jsonb_key on test USING GIN ((key_value->'keys') jsonb_path_ops);
+drop index idx_jsonb_key;
+create index idx_test on test USING GIN ("keys");
+set enable_seqscan to off;
+
+select * from test;
+
+insert into "test" (keys)
+SELECT distinct array[
+        left(md5(random()::text), 8),
+        left(md5(random()::text), 8),
+        left(md5(random()::text), 8),
+        left(md5(random()::text), 8)
+    ]
+FROM generate_series(1, 100000) AS x(id);
+
+-- ["00001b13","cc77c6c8","cdb29999","83388a5f"] GOSTEI
+explain analyze select * from test WHERE keys @> ANY (array['a']);
+explain analyze select * from test WHERE keys && (array['00001b13', 'não existe']);
+                select * from test WHERE keys && (array['00001b13', 'não existe']);
+
+
+explain analyze select * from test WHERE keys @> ARRAY['00001b13'];
+
+
+
+insert into "test" (key_value)
+select (jsonb_set('{}'::jsonb, '{keys}', array_to_json(array[
+        left(md5(random()::text), 8),
+        left(md5(random()::text), 8),
+        left(md5(random()::text), 8),
+        left(md5(random()::text), 8)
+    ])::jsonb, true))
+FROM generate_series(1, 100000) AS x(id);
+
+-- {"keys":["f0989a71","2abea262","14342bf8","d17b8c9a"]}
+explain analyze select * from test WHERE key_value->'keys' @> ANY (ARRAY ['"f0989a71"', '"aaa"']::jsonb[]);
+                select * from test WHERE key_value->'keys' @> ANY (ARRAY ['"f0989a71"', '"aaa"']::jsonb[]);
+                select * from test WHERE key_value->'keys' && '["a"]'::jsonb
+
+
+-- {"keys":["1917eeb0","71a2e060","7663b0c2","82f48d3b"]}
+
+
+select * from test
