@@ -1,10 +1,10 @@
 defmodule RulesetToExpression do
-  def run({%{operation: "OR", rules: rules}}, data) do
+  def run(%{operation: "OR", rules: rules}, data) do
     Enum.map(rules, fn r -> run(r, data) end)
     |> Enum.any?()
   end
 
-  def run({%{operation: "AND", rules: rules}}, data) do
+  def run(%{operation: "AND", rules: rules}, data) do
     Enum.map(rules, fn r -> run(r, data) end)
     |> Enum.all?()
   end
@@ -18,7 +18,9 @@ defmodule RulesetToExpression do
   end
 
   def extract_data(key, data) do
-    {:ok, value} = Map.fetch(data, String.to_existing_atom(key))
-    value
+    case Map.fetch(data, String.to_existing_atom(key)) do
+      {:ok, value} -> value
+      _ -> false
+    end
   end
 end

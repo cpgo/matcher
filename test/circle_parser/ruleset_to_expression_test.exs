@@ -26,22 +26,20 @@ defmodule RulesetToExpressionTest do
   end
 
   test "generate correct EQUAL rule with OR operation" do
-    rule = {
-      %{
-        operation: "OR",
-        rules: [
-          %{
-            lhs: "username",
-            condition: "EQUAL",
-            rhs: "email@email.com"
-          },
-          %{
-            lhs: "age",
-            condition: "GREATER_THAN",
-            rhs: "18"
-          }
-        ]
-      }
+    rule = %{
+      operation: "OR",
+      rules: [
+        %{
+          lhs: "username",
+          condition: "EQUAL",
+          rhs: "email@email.com"
+        },
+        %{
+          lhs: "age",
+          condition: "GREATER_THAN",
+          rhs: "18"
+        }
+      ]
     }
 
     match = %{
@@ -71,22 +69,20 @@ defmodule RulesetToExpressionTest do
   end
 
   test "generate correct EQUAL rule with AND operation" do
-    rule = {
-      %{
-        operation: "AND",
-        rules: [
-          %{
-            lhs: "username",
-            condition: "EQUAL",
-            rhs: "email@email.com"
-          },
-          %{
-            lhs: "age",
-            condition: "GREATER_THAN",
-            rhs: "18"
-          }
-        ]
-      }
+    rule = %{
+      operation: "AND",
+      rules: [
+        %{
+          lhs: "username",
+          condition: "EQUAL",
+          rhs: "email@email.com"
+        },
+        %{
+          lhs: "age",
+          condition: "GREATER_THAN",
+          rhs: "18"
+        }
+      ]
     }
 
     match = %{
@@ -136,5 +132,110 @@ defmodule RulesetToExpressionTest do
 
     assert RulesetToExpression.run(rule, match) == true
     assert RulesetToExpression.run(rule, dont_match) == false
+  end
+
+  test "grouped rule OR" do
+    rule = %{
+      operation: "OR",
+      rules: [
+        %{
+          operation: "AND",
+          rules: [
+            %{
+              lhs: "name",
+              condition: "EQUAL",
+              rhs: "tester1"
+            },
+            %{
+              lhs: "age",
+              condition: "EQUAL",
+              rhs: "12"
+            }
+          ]
+        },
+        %{
+          lhs: "name",
+          condition: "EQUAL",
+          rhs: "tester"
+        }
+      ]
+    }
+
+    match = %{
+      data: %{
+        name: "tester"
+      }
+    }
+
+    also_match = %{
+      data: %{
+        name: "tester1",
+        age: "12"
+      }
+    }
+
+    dont_match = %{
+      data: %{
+        name: "fulano",
+        age: "12"
+      }
+    }
+
+    assert RulesetToExpression.run(rule, match) == true
+    assert RulesetToExpression.run(rule, also_match) == true
+    assert RulesetToExpression.run(rule, dont_match) == false
+  end
+
+  test "grouped rule AND" do
+    rule = %{
+      operation: "AND",
+      rules: [
+        %{
+          operation: "AND",
+          rules: [
+            %{
+              lhs: "name",
+              condition: "EQUAL",
+              rhs: "joe"
+            },
+            %{
+              lhs: "age",
+              condition: "EQUAL",
+              rhs: "12"
+            }
+          ]
+        },
+        %{
+          lhs: "role",
+          condition: "EQUAL",
+          rhs: "tester"
+        }
+      ]
+    }
+
+    match = %{
+      data: %{
+        name: "joe",
+        age: "12",
+        role: "tester"
+      }
+    }
+
+    dont_match = %{
+      data: %{
+        name: "tester"
+      }
+    }
+
+    also_dont_match = %{
+      data: %{
+        name: "joe",
+        age: "12"
+      }
+    }
+
+    assert RulesetToExpression.run(rule, match) == true
+    assert RulesetToExpression.run(rule, dont_match) == false
+    assert RulesetToExpression.run(rule, also_dont_match) == false
   end
 end
