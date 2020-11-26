@@ -2,6 +2,60 @@ defmodule EtsKeyTest do
   use ExUnit.Case
   alias Matcher.CreateTupleKey
 
+  test "angelica" do
+    json_string = """
+    {
+      "name": "Nested",
+      "workspaceId": "42be29b6-b045-48cd-88a3-d7859e721a1d",
+      "rules": {
+        "logicalOperator": "OR",
+        "type": "CLAUSE",
+        "clauses": [
+          {
+            "logicalOperator": "AND",
+            "type": "CLAUSE",
+            "clauses": [
+              {
+                "type": "RULE",
+                "content": {
+                  "key": "name",
+                  "value": [
+                    "tester1"
+                  ],
+                  "condition": "EQUAL"
+                }
+              },
+              {
+                "type": "RULE",
+                "content": {
+                  "key": "age",
+                  "value": [
+                    "12"
+                  ],
+                  "condition": "EQUAL"
+                }
+              }
+            ]
+          },
+          {
+            "type": "RULE",
+            "content": {
+              "key": "name",
+              "value": [
+                "tester"
+              ],
+              "condition": "EQUAL"
+            }
+          }
+        ]
+      },
+      "authorId": "c7e6dafe-aa7a-4536-be1b-34eaad4c2915"
+    }
+    """
+    expected = {"42be29b6-b045-48cd-88a3-d7859e721a1d", {{"name", "tester1"}, {"age", "12"}}, {{"name", "tester"}}}
+    assert CreateTupleKey.generate_keys(json_string) == expected
+  end
+
   test "parse to ets tuple with single rule" do
     json_string = """
     {

@@ -2,13 +2,93 @@ defmodule EtsValueTest do
   use ExUnit.Case
   alias Matcher.CreateTupleValue
 
+  test "angelica" do
+    json_string = """
+    {
+      "name": "Nested",
+      "rules": {
+        "logicalOperator": "OR",
+        "type": "CLAUSE",
+        "clauses": [
+          {
+            "logicalOperator": "AND",
+            "type": "CLAUSE",
+            "clauses": [
+              {
+                "type": "RULE",
+                "content": {
+                  "key": "name",
+                  "value": [
+                    "tester1"
+                  ],
+                  "condition": "EQUAL"
+                }
+              },
+              {
+                "type": "RULE",
+                "content": {
+                  "key": "age",
+                  "value": [
+                    "12"
+                  ],
+                  "condition": "EQUAL"
+                }
+              }
+            ]
+          },
+          {
+            "type": "RULE",
+            "content": {
+              "key": "name",
+              "value": [
+                "tester"
+              ],
+              "condition": "EQUAL"
+            }
+          }
+        ]
+      },
+      "authorId": "c7e6dafe-aa7a-4536-be1b-34eaad4c2915"
+    }
+    """
+
+    expected =
+      %{
+        operation: "OR",
+        rules: [
+          %{
+            operation: "AND",
+            rules: [
+              %{
+                lhs: "name",
+                condition: "EQUAL",
+                rhs: "tester1"
+              },
+              %{
+                lhs: "age",
+                condition: "EQUAL",
+                rhs: "12"
+              }
+            ]
+          },
+          %{
+            lhs: "name",
+            condition: "EQUAL",
+            rhs: "tester"
+          }
+        ]
+      }
+
+
+    assert CreateTupleValue.generate_value(json_string) == expected
+  end
+
   test "parse single rule expression" do
     json_string = """
     {
     "name": "Testestestetsets",
     "workspaceId": "96c4e727-a7d2-4d1f-9ccd-215c54c13889",
     "rules": {
-        "logicalOperator": "OR",
         "type": "CLAUSE",
         "clauses": [
             {
@@ -27,17 +107,13 @@ defmodule EtsValueTest do
     }
     """
 
-    expected = {
+    expected =
       %{
-        rules: [
-          %{
-            lhs: "username",
-            condition: "EQUAL",
-            rhs: "user@email.com"
-          }
-        ]
+        condition: "EQUAL",
+        lhs: "username",
+        rhs: "user@email.com"
       }
-    }
+
 
     assert CreateTupleValue.generate_value(json_string) == expected
   end
@@ -48,7 +124,6 @@ defmodule EtsValueTest do
       "name": "Composite",
       "workspaceId": "96c4e727-a7d2-4d1f-9ccd-215c54c13889",
       "rules": {
-        "logicalOperator": "OR",
         "type": "CLAUSE",
         "clauses": [
           {
@@ -83,7 +158,7 @@ defmodule EtsValueTest do
     }
     """
 
-    expected = {
+    expected =
       %{
         operation: "OR",
         rules: [
@@ -99,7 +174,7 @@ defmodule EtsValueTest do
           }
         ]
       }
-    }
+
 
     assert CreateTupleValue.generate_value(json_string) == expected
   end
@@ -109,7 +184,6 @@ defmodule EtsValueTest do
     {
     "name": "Composite",
     "rules": {
-        "logicalOperator": "OR",
         "type": "CLAUSE",
         "clauses": [
             {
@@ -154,7 +228,7 @@ defmodule EtsValueTest do
     }
     """
 
-    expected = {
+    expected =
       %{
         operation: "OR",
         rules: [
@@ -175,7 +249,7 @@ defmodule EtsValueTest do
           }
         ]
       }
-    }
+
 
     assert CreateTupleValue.generate_value(json_string) == expected
   end

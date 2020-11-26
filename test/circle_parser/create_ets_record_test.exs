@@ -8,7 +8,6 @@ defmodule CreateEtsRecordTest do
     "name": "Test",
     "workspaceId": "96c4e727-a7d2-4d1f-9ccd-215c54c13889",
     "rules": {
-        "logicalOperator": "OR",
         "type": "CLAUSE",
         "clauses": [
             {

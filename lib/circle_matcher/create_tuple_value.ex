@@ -5,31 +5,53 @@ defmodule Matcher.CreateTupleValue do
     data.rules.clauses
     |> extract_operation()
     |> extract_content()
-    |> wrap_content()
+    |> wrap_content(data.rules)
   end
 
   defp extract_operation(clauses) do
-    Enum.reduce(clauses, [], fn c, acc ->
-      transform_node(c, acc)
+    Enum.map(clauses, fn c ->
+      transform_node(c)
     end)
+    # Enum.reduce(clauses, [], fn c, acc ->
+    #   transform_node(c, acc)
+    # end)
   end
 
-  defp transform_node(node = %{type: "CLAUSE", clauses: sub_clauses}, acc) do
+  defp transform_node(node = %{type: "CLAUSE", clauses: sub_clauses}) do
     %{
       operation: node.logicalOperator,
-      clauses: Enum.map(acc ++ sub_clauses, fn c -> c.content end)
+      clauses: Enum.map(transform_node(sub_clauses), fn c -> c.clause end)
     }
   end
 
-  defp transform_node(%{type: "RULE", content: content}, _) do
+
+  defp transform_node(%{type: "RULE", content: content}) do
     %{
       clause: content
     }
   end
 
+  defp transform_node(nodes) when is_list(nodes)  do
+    Enum.map(nodes, fn n -> transform_node(n) end)
+  end
+
+  defp extract_content(clauses) when is_list(clauses) do
+    clauses
+    |> Enum.map(fn clause ->
+      extract_content(clause)
+    end)
+  end
+
+  # defp extract_content(rules, operator) do
+  #   %{
+  #     operation: operator,
+  #     rules: extract_content_from_list(rules)
+  #   }
+  # end
+
   defp extract_content(%{clauses: clauses, operation: operation}) do
     %{
-      op: operation,
+      operation: operation,
       rules: extract_content_from_list(clauses)
     }
   end
@@ -49,22 +71,35 @@ defmodule Matcher.CreateTupleValue do
     end)
   end
 
-  defp wrap_content(clause = %{lhs: _}) do
-    {
-      %{
-        rules: [clause]
-      }
+  defp wrap_content(rules, %{logicalOperator: operator}) do
+    %{
+      operation: operator,
+      rules: rules
     }
   end
 
-  defp wrap_content(%{op: op, rules: rules}) do
-    {
-      %{
-        operation: op,
-        rules: rules
-      }
-    }
+  defp wrap_content(rules, _) do
+    rules
+    |> List.first
   end
+
+  # defp wrap_content(clause = %{lhs: _}) do
+  #   {
+  #     %{
+  #       rules: [clause]
+  #     }
+  #   }
+  # end
+
+  # defp wrap_content(%{op: op, rules: rules}) do
+  #   IO.inspect(rules)
+  #   {
+  #     %{
+  #       operation: op,
+  #       rules: rules
+  #     }
+  #   }
+  # end
 
   # def wrap_content(clause = %{sub_rules: _, operation: _}) do
   #   {
