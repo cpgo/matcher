@@ -154,16 +154,16 @@ defmodule RulesetToExpressionTest do
           ]
         },
         %{
-          lhs: "name",
+          lhs: "role",
           condition: "EQUAL",
-          rhs: "tester"
+          rhs: "admin"
         }
       ]
     }
 
     match = %{
       data: %{
-        name: "tester"
+        role: "admin"
       }
     }
 
@@ -176,8 +176,9 @@ defmodule RulesetToExpressionTest do
 
     dont_match = %{
       data: %{
-        name: "fulano",
-        age: "12"
+        name: "tester1",
+        age: "10",
+        role: "dev"
       }
     }
 
