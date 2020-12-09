@@ -4,7 +4,7 @@ defmodule CircleMatcher.Repo.Migrations.CreateCircles do
   def change do
     create table(:circles, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :rules, :map
+      add :segmentation, :map
       add :name, :string
       add :workspace_id, :uuid
       add :author_id, :uuid

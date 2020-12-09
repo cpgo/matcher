@@ -7,16 +7,16 @@ defmodule CircleMatcherWeb.CircleControllerTest do
   @create_attrs %{
     author_id: "7488a646-e31f-11e4-aace-600308960662",
     name: "some name",
-    rules: %{},
+    segmentation: %{},
     workspace_id: "7488a646-e31f-11e4-aace-600308960662"
   }
   @update_attrs %{
     author_id: "7488a646-e31f-11e4-aace-600308960668",
     name: "some updated name",
-    rules: %{},
+    segmentation: %{},
     workspace_id: "7488a646-e31f-11e4-aace-600308960668"
   }
-  @invalid_attrs %{author_id: nil, name: nil, rules: nil, workspace_id: nil}
+  @invalid_attrs %{author_id: nil, name: nil, segmentation: nil, workspace_id: nil}
 
   def fixture(:circle) do
     {:ok, circle} = Circles.create_circle(@create_attrs)
@@ -36,17 +36,34 @@ defmodule CircleMatcherWeb.CircleControllerTest do
 
   describe "create circle" do
     test "renders circle when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.circle_path(conn, :create), circle: @create_attrs)
+      create_attrs = %{
+        circle: %{
+          name: "Tester Circle",
+          author_id: "c7e6dafe-aa7a-4536-be1b-34eaad4c2915",
+          workspace_id: "c7e6dafe-aa7a-4536-be1b-34eaad4c2915",
+          segmentation: %{
+            lhs: "name",
+            condition: "EQUAL",
+            rhs: "tester"
+          }
+        }
+      }
+
+      conn = post(conn, Routes.circle_path(conn, :create), create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.circle_path(conn, :show, id))
 
       assert %{
                "id" => ^id,
-               "author_id" => "7488a646-e31f-11e4-aace-600308960662",
-               "name" => "some name",
-               "rules" => %{},
-               "workspace_id" => "7488a646-e31f-11e4-aace-600308960662"
+               "author_id" => "c7e6dafe-aa7a-4536-be1b-34eaad4c2915",
+               "name" => "Tester Circle",
+               "segmentation" => %{
+                 "lhs" => "name",
+                 "condition" => "EQUAL",
+                 "rhs" => "tester"
+               },
+               "workspace_id" => "c7e6dafe-aa7a-4536-be1b-34eaad4c2915"
              } = json_response(conn, 200)["data"]
     end
 
@@ -69,7 +86,7 @@ defmodule CircleMatcherWeb.CircleControllerTest do
                "id" => ^id,
                "author_id" => "7488a646-e31f-11e4-aace-600308960668",
                "name" => "some updated name",
-               "rules" => %{},
+               "segmentation" => %{},
                "workspace_id" => "7488a646-e31f-11e4-aace-600308960668"
              } = json_response(conn, 200)["data"]
     end
