@@ -8,6 +8,7 @@ defmodule CircleMatcherWeb.Router do
   scope "/api", CircleMatcherWeb do
     pipe_through(:api)
     resources("/circles", CircleController, except: [:new, :edit])
+    post "/identify", CircleController, :identify
   end
 
   # Enables LiveDashboard only for development

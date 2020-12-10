@@ -40,4 +40,9 @@ defmodule CircleMatcherWeb.CircleController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def identify(conn, %{"data" => data}) do
+    Plug.Conn.put_resp_header(conn, "content-type", "application/json")
+    |> send_resp(200, "123")
+  end
 end

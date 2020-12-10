@@ -56,6 +56,29 @@ defmodule CircleMatcherWeb.CircleControllerTest do
     end
   end
 
+  describe "identify" do
+    test "identify circle with simple rule", %{conn: conn} do
+      create_attrs = %{
+        "circle" => %{
+          "name" => "Tester Circle",
+          "author_id" => "c7e6dafe-aa7a-4536-be1b-34eaad4c2915",
+          "workspace_id" => "c7e6dafe-aa7a-4536-be1b-34eaad4c2915",
+          "rules" => %{
+            "lhs" => "name",
+            "condition" => "EQUAL",
+            "rhs" => "tester"
+          }
+        }
+      }
+
+      {:ok, circle} = Circles.create_circle(create_attrs["circle"])
+      conn = post(conn, Routes.circle_path(conn, :identify, %{data: %{"name" => "tester"}}))
+
+      id = circle.id
+      assert ^id = json_response(conn, 200)
+    end
+  end
+
   describe "update circle" do
     setup [:create_circle]
 
