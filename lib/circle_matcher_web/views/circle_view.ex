@@ -11,10 +11,13 @@ defmodule CircleMatcherWeb.CircleView do
   end
 
   def render("circle.json", %{circle: circle}) do
-    %{id: circle.id,
+    %{
+      id: circle.id,
       rules: circle.rules,
       name: circle.name,
+      query_keys: circle.query_keys,
       workspace_id: circle.workspace_id,
-      author_id: circle.author_id}
+      author_id: circle.author_id
+    }
   end
 end
