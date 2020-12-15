@@ -18,11 +18,27 @@ defmodule CircleMatcher.Circles.Circle do
     circle
     |> cast(attrs, [:rules, :name, :workspace_id, :author_id, :query_keys])
     |> validate_required([:rules, :name, :workspace_id, :author_id])
-    |> put_query_keys(attrs)
+    |> validate_rules()
+    |> put_query_keys()
   end
 
-  def put_query_keys(changeset, attrs) do
-    keys = CircleMatcher.Circles.KeyParser.generate_keys(attrs["rules"])
-    put_change(changeset, :query_keys, keys)
+  def put_query_keys(changeset) do
+    if changeset.valid? do
+      keys = CircleMatcher.Circles.KeyParser.generate_keys(Map.get(changeset.changes, :rules, %{}))
+      put_change(changeset, :query_keys, keys)
+    else
+      changeset
+    end
+  end
+
+  def validate_rules(changeset) do
+    validate_change(changeset, :rules, fn :rules, rules ->
+      case rules do
+        nil ->
+          [rules: "cannot be nil"]
+        _ ->
+          []
+      end
+    end)
   end
 end

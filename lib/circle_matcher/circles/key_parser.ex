@@ -10,4 +10,8 @@ defmodule CircleMatcher.Circles.KeyParser do
   def generate_keys(rules) when is_list(rules) do
     Enum.flat_map(rules, fn r -> generate_keys(r) end) |> Enum.uniq()
   end
+
+  def generate_keys(%{}) do
+    []
+  end
 end

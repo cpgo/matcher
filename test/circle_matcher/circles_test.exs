@@ -5,9 +5,9 @@ defmodule CircleMatcher.CirclesTest do
 
   describe "circles" do
     alias CircleMatcher.Circles.Circle
-
-    @valid_attrs %{author_id: "7488a646-e31f-11e4-aace-600308960662", name: "some name", rules: %{}, workspace_id: "7488a646-e31f-11e4-aace-600308960662"}
-    @update_attrs %{author_id: "7488a646-e31f-11e4-aace-600308960668", name: "some updated name", rules: %{}, workspace_id: "7488a646-e31f-11e4-aace-600308960668"}
+    @rules %{"lhs" => "user", "condition" => "EQUALS", "rhs" => "joe"}
+    @valid_attrs %{author_id: "7488a646-e31f-11e4-aace-600308960662", name: "some name", rules: @rules, workspace_id: "7488a646-e31f-11e4-aace-600308960662"}
+    @update_attrs %{author_id: "7488a646-e31f-11e4-aace-600308960668", name: "some updated name", rules: @rules, workspace_id: "7488a646-e31f-11e4-aace-600308960668"}
     @invalid_attrs %{author_id: nil, name: nil, rules: nil, workspace_id: nil}
 
     def circle_fixture(attrs \\ %{}) do
@@ -33,7 +33,7 @@ defmodule CircleMatcher.CirclesTest do
       assert {:ok, %Circle{} = circle} = Circles.create_circle(@valid_attrs)
       assert circle.author_id == "7488a646-e31f-11e4-aace-600308960662"
       assert circle.name == "some name"
-      assert circle.rules == %{}
+      assert circle.rules == %{"lhs" => "user", "condition" => "EQUALS", "rhs" => "joe"}
       assert circle.workspace_id == "7488a646-e31f-11e4-aace-600308960662"
     end
 
@@ -46,7 +46,7 @@ defmodule CircleMatcher.CirclesTest do
       assert {:ok, %Circle{} = circle} = Circles.update_circle(circle, @update_attrs)
       assert circle.author_id == "7488a646-e31f-11e4-aace-600308960668"
       assert circle.name == "some updated name"
-      assert circle.rules == %{}
+      assert circle.rules == %{"lhs" => "user", "condition" => "EQUALS", "rhs" => "joe"}
       assert circle.workspace_id == "7488a646-e31f-11e4-aace-600308960668"
     end
 
